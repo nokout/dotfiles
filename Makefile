@@ -1,6 +1,6 @@
-.PHONY: all dotfiles test shellcheck
+.PHONY: all dotfiles test shellcheck apt
 
-all: dotfiles
+all: dotfiles apt
 
 # bin:
 # 	# add aliases for things in bin
@@ -9,6 +9,29 @@ all: dotfiles
 # 		sudo ln -sf $$file /usr/local/bin/$$f; \
 # 	done
 # 	sudo ln -sf $(CURDIR)/bin/browser-exec /usr/local/bin/xdg-open; \
+
+apt:
+	apt-get update
+	apt-get -y upgrade
+
+	apt-get install -y \
+			xclip \
+			terminator \
+			docker.io \
+			dkms \
+			jq \
+			--no-install-recommends
+
+		# install icdiff
+		curl -sSL https://raw.githubusercontent.com/jeffkaufman/icdiff/master/icdiff > /usr/local/bin/icdiff
+		curl -sSL https://raw.githubusercontent.com/jeffkaufman/icdiff/master/git-icdiff > /usr/local/bin/git-icdiff
+		chmod +x /usr/local/bin/icdiff
+		chmod +x /usr/local/bin/git-icdiff
+
+		# install lolcat
+		curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat > /usr/local/bin/lolcat
+		chmod +x /usr/local/bin/lolcat
+
 
 dotfiles:
 	# add aliases for dotfiles

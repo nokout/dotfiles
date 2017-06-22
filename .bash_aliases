@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # debian specific aliases
-alias open='xdg-open'
-alias pbcopy='xclip -selection clipboard'
-alias pbpaste='xclip -selection clipboard -o'
+#alias open='xdg-open'
+#alias pbcopy='xclip -selection clipboard'
+#alias pbpaste='xclip -selection clipboard -o'
 
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
@@ -120,7 +120,7 @@ alias mv='mv -i'
 alias untar='tar xvf'
 
 # Pipe my public key to my clipboard.
-alias pubkey="more ~/.ssh/id_ed25519.pub | xclip -selection clipboard | echo '=> Public key copied to pasteboard.'"
+#alias pubkey="more ~/.ssh/id_ed25519.pub | xclip -selection clipboard | echo '=> Public key copied to pasteboard.'"
 
 # Pipe my private key to my clipboard.
-alias prikey="more ~/.ssh/id_ed25519 | xclip -selection clipboard | echo '=> Private key copied to pasteboard.'"
+#alias prikey="more ~/.ssh/id_ed25519 | xclip -selection clipboard | echo '=> Private key copied to pasteboard.'"

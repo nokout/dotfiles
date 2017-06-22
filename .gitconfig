@@ -190,13 +190,13 @@
 	user = nokout
 
 [commit]
-	gpgsign = true
+	gpgsign = false
 
 [http]
 	cookiefile = ~/.gitcookies
 
 [gpg]
-	program = gpg2
+	program = gpg
 
 [sendemail]
 	smtpEncryption = tls
