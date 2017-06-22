@@ -6,6 +6,18 @@ export DOCKER_REPO_PREFIX=jess
 #
 # Helper Functions
 #
+
+docksall(){
+	# shellcheck disable=SC2046
+	docker save $(docker images -q) | pv | gzip -c > "$1"
+
+	}
+
+dockload(){
+	pv < "$1" | docker load
+	}
+
+
 dcleanup(){
 	local containers
 	containers=( $(docker ps -aq 2>/dev/null) )
@@ -26,6 +38,7 @@ del_stopped(){
 		docker rm "$name"
 	fi
 }
+
 relies_on(){
 	for container in "$@"; do
 		local state
@@ -38,39 +51,39 @@ relies_on(){
 	done
 }
 # creates an nginx config for a local route
-nginx_config(){
-	server=$1
-	route=$2
-
-	cat >"${HOME}/.nginx/conf.d/${server}.conf" <<-EOF
-	upstream ${server} { server ${route}; }
-	server {
-	server_name ${server};
-
-	location / {
-	proxy_pass  http://${server};
-	proxy_http_version 1.1;
-	proxy_set_header Upgrade \$http_upgrade;
-	proxy_set_header Connection "upgrade";
-	proxy_set_header Host \$http_host;
-	proxy_set_header X-Forwarded-Proto \$scheme;
-	proxy_set_header X-Forwarded-For \$remote_addr;
-	proxy_set_header X-Forwarded-Port \$server_port;
-	proxy_set_header X-Request-Start \$msec;
-}
-	}
-	EOF
-
-	# restart nginx
-	docker restart nginx
-
-	# add host to /etc/hosts
-	hostess add "$server" 127.0.0.1
-
-	# open browser
-	browser-exec "http://${server}"
-}
-
+# nginx_config(){
+# 	server=$1
+# 	route=$2
+#
+# 	cat >"${HOME}/.nginx/conf.d/${server}.conf" <<-EOF
+# 	upstream ${server} { server ${route}; }
+# 	server {
+# 	server_name ${server};
+#
+# 	location / {
+# 	proxy_pass  http://${server};
+# 	proxy_http_version 1.1;
+# 	proxy_set_header Upgrade \$http_upgrade;
+# 	proxy_set_header Connection "upgrade";
+# 	proxy_set_header Host \$http_host;
+# 	proxy_set_header X-Forwarded-Proto \$scheme;
+# 	proxy_set_header X-Forwarded-For \$remote_addr;
+# 	proxy_set_header X-Forwarded-Port \$server_port;
+# 	proxy_set_header X-Request-Start \$msec;
+# }
+# 	}
+# 	EOF
+#
+# 	# restart nginx
+# 	docker restart nginx
+#
+# 	# add host to /etc/hosts
+# 	hostess add "$server" 127.0.0.1
+#
+# 	# open browser
+# 	browser-exec "http://${server}"
+# }
+#
 #
 # Container Aliases
 #
@@ -80,6 +93,27 @@ apt_file(){
 		${DOCKER_REPO_PREFIX}/apt-file
 }
 alias apt-file="apt_file"
+
+
+atom(){
+
+# ipc=host is to workaround for atom issues github.com/cypress-io/cypress/issues/350
+# volume /dev/shm is another possible workaround for atom issues github.com/atom/atom/issues/8684
+#		-v /dev/shm:/dev/shm \
+del_stopped atom
+	docker run -d \
+		--ipc=host \
+		--user $UID \
+		-v /home/"$USER/:/home/$USER"/ \
+		-v /:/host_root/ \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-e "DISPLAY=unix$DISPLAY" \
+		--workdir=/host_root/"$(pwd)" \
+		atom "${@:1}"
+
+
+}
+
 audacity(){
 	del_stopped audacity
 
@@ -175,7 +209,7 @@ chrome(){
 		--group-add audio \
 		--group-add video \
 		--name chrome \
-		${DOCKER_REPO_PREFIX}/chrome --user-data-dir=/data \
+		chrome --user-data-dir=/data \
 		--proxy-server="$proxy" \
 		--host-resolver-rules="$map" "$args"
 
@@ -273,7 +307,9 @@ gimp(){
 		-e GDK_SCALE \
 		-e GDK_DPI_SCALE \
 		--name gimp \
-		${DOCKER_REPO_PREFIX}/gimp
+		gimp
+		#		-v /home/"$USER/:/home/$USER"/ \
+		#		--user $UID \
 }
 gitsome(){
 	docker run --rm -it \
@@ -312,6 +348,25 @@ imagemin(){
 		-v "${HOME}/Pictures:/root/Pictures" \
 		${DOCKER_REPO_PREFIX}/imagemin sh -c "imagemin /root/Pictures/${image} > /root/Pictures/${filename}_min.${extension}"
 }
+
+
+inkscape(){
+	del_stopped inkscape
+
+	docker run -v /tmp/.X11-unix:/tmp/.X11-unix \
+	-v /inkscape/:/workspace \
+	-v /home/"$USER/:/home/$USER"/ \
+	-v /:/host_root/ \
+	-v /tmp/.X11-unix:/tmp/.X11-unix \
+	-e "DISPLAY=unix$DISPLAY" \
+	--workdir=/host_root/"$(pwd)" \
+	--name inkscape \
+	inkscape
+	# --user $UID \
+
+}
+
+
 irssi() {
 	del_stopped irssi
 	# relies_on notify_osd
