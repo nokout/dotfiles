@@ -13,6 +13,9 @@ alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
+#try to avoid rm files use the trash instead
+alias trash="gio trash"
+
 # Shortcuts
 alias dl="cd ~/Downloads"
 alias g="git"
@@ -33,6 +36,7 @@ alias l="ls -lF ${colorflag}"
 # List all files colorized in long format, including dot files
 # shellcheck disable=SC2139
 alias la="ls -laF ${colorflag}"
+alias ll="la"
 
 # List only directories
 # shellcheck disable=SC2139
