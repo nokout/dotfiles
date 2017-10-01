@@ -1,36 +1,8 @@
 .PHONY: all dotfiles test shellcheck apt
 
-all: dotfiles apt
+username?=nokout
 
-# bin:
-# 	# add aliases for things in bin
-# 	for file in $(shell find $(CURDIR)/bin -type f -not -name "*-backlight" -not -name ".*.swp"); do \
-# 		f=$$(basename $$file); \
-# 		sudo ln -sf $$file /usr/local/bin/$$f; \
-# 	done
-# 	sudo ln -sf $(CURDIR)/bin/browser-exec /usr/local/bin/xdg-open; \
-
-apt:
-	apt-get update
-	apt-get -y upgrade
-
-	apt-get install -y \
-			xclip \
-			terminator \
-			docker.io \
-			dkms \
-			jq \
-			--no-install-recommends
-
-		# install icdiff
-		curl -sSL https://raw.githubusercontent.com/jeffkaufman/icdiff/master/icdiff > /usr/local/bin/icdiff
-		curl -sSL https://raw.githubusercontent.com/jeffkaufman/icdiff/master/git-icdiff > /usr/local/bin/git-icdiff
-		chmod +x /usr/local/bin/icdiff
-		chmod +x /usr/local/bin/git-icdiff
-
-		# install lolcat
-		curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat > /usr/local/bin/lolcat
-		chmod +x /usr/local/bin/lolcat
+all: dotfiles apt etc
 
 
 dotfiles:
@@ -39,24 +11,63 @@ dotfiles:
 		f=$$(basename $$file); \
 		ln -sfn $$file $(HOME)/$$f; \
 	done; \
-	# ln -sfn $(CURDIR)/.gnupg/gpg.conf $(HOME)/.gnupg/gpg.conf;
-	# ln -sfn $(CURDIR)/.gnupg/gpg-agent.conf $(HOME)/.gnupg/gpg-agent.conf;
-	# ln -fn $(CURDIR)/gitignore $(HOME)/.gitignore;
 
-# etc:
+	#Not sure why gitignore needs a harder symlink, but I assume there is a reason
+	sudo ln -fn $(CURDIR)/.gitignore $(HOME)/.gitignore;
+
+apt:
+	sudo apt-get update
+	sudo apt-get -y upgrade
+
+	#add sublime text repo
+	
+	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+
+	sudo apt-get install -y \
+			sublime-text \
+			git \
+			xclip \
+			python-pip \
+			terminator \
+			docker.io \
+			dkms \
+			jq \
+			curl \
+			--no-install-recommends
+
+
+
+etc:
+	# Setup the docker user
+	sudo usermod -a -G docker $(username)
+
+	# install icdiff in prompt and use it in git
+	curl -sSL https://raw.githubusercontent.com/jeffkaufman/icdiff/master/icdiff | sudo dd of=/usr/local/bin/icdiff
+	curl -sSL https://raw.githubusercontent.com/jeffkaufman/icdiff/master/git-icdiff | sudo dd of=/usr/local/bin/git-icdiff
+	sudo chmod +x /usr/local/bin/icdiff
+	sudo chmod +x /usr/local/bin/git-icdiff
+
+	# install lolcat
+	curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat | sudo dd of=/usr/local/bin/lolcat
+	sudo chmod +x /usr/local/bin/lolcat
+
+	#Configure Terminator Profile
+	sudo ln -sfn $(CURDIR)/terminator_config $(HOME)/.config/terminator/config
+
 # 	for file in $(shell find $(CURDIR)/etc -type f -not -name ".*.swp"); do \
 # 		f=$$(echo $$file | sed -e 's|$(CURDIR)||'); \
 # 		sudo ln -f $$file $$f; \
 # 	done
-# 	systemctl --user daemon-reload
-# 	sudo systemctl daemon-reload
+#   systemctl --user daemon-reload
+#   systemctl daemon-reload
 
 test: shellcheck
 
 # if this session isn't interactive, then we don't want to allocate a
 # TTY, which would fail, but if it is interactive, we do want to attach
 # so that the user can send e.g. ^C through.
-INTERACTIVE := $(shell [ -t 0 ] && echo 1 || echo 0)
+INTERACTIVE := $(sh    sudo usermod -a -G docker $USERell [ -t 0 ] && echo 1 || echo 0)
 ifeq ($(INTERACTIVE), 1)
 	DOCKER_FLAGS += -t
 endif
