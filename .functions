@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Make dir and cd into it
+mkcd ()
+{
+    mkdir -p -- "$1" &&
+      cd -P -- "$1"
+}
+
+
 # Simple calculator
 calc() {
 	local result=""
