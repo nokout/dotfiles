@@ -12,6 +12,9 @@ dotfiles:
 		ln -sfn $$file $(HOME)/$$f; \
 	done; \
 
+	#Add powerline prompt setup from submodule
+	ln -sfn $(CURDIR)/bash-powerline/bash-powerline.sh $(HOME)/.bash-powerline
+
 	#Not sure why gitignore needs a harder symlink, but I assume there is a reason
 	sudo ln -fn $(CURDIR)/.gitignore $(HOME)/.gitignore;
 
