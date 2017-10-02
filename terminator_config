@@ -10,32 +10,44 @@
       maximised = True
       order = 0
       parent = ""
-      position = 0:0
+      position = 0:32
       size = 1600, 836
       title = ~
       type = Window
     [[[child1]]]
       order = 0
       parent = child0
-      position = 578
-      ratio = 0.695547533093
+      position = 583
+      ratio = 0.701564380265
       type = VPaned
+    [[[child3]]]
+      order = 1
+      parent = child1
+      position = 846
+      ratio = 0.530407523511
+      type = HPaned
     [[[terminal2]]]
       order = 0
       parent = child1
       profile = default
       type = Terminal
       uuid = b15efe6f-e97b-4b57-82b4-9ca6ce0795da
-    [[[terminal3]]]
-      order = 1
-      parent = child1
+    [[[terminal4]]]
+      order = 0
+      parent = child3
       profile = default
       type = Terminal
       uuid = c5d3b146-101f-4abc-a55c-8ad9dda92854
+    [[[terminal5]]]
+      order = 1
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 6ccf91ee-2fda-4afb-babb-eeec6c5cc790
 [plugins]
 [profiles]
   [[default]]
     cursor_color = "#aaaaaa"
-    font = Courier 10 Pitch 23
+    font = Courier 10 Pitch 15
     login_shell = True
     use_system_font = False
