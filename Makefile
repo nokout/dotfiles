@@ -13,7 +13,7 @@ dotfiles:
 	done; \
 
 	#Add powerline prompt setup from submodule
-	ln -sfn $(CURDIR)/bash-powerline/bash-powerline.sh $(HOME)/.bash-powerline
+	ln -sfn $(CURDIR)/bash-powerline/bash-powerline.sh $(HOME)/.bash_powerline
 
 	#Not sure why gitignore needs a harder symlink, but I assume there is a reason
 	sudo ln -fn $(CURDIR)/.gitignore $(HOME)/.gitignore;
@@ -37,6 +37,10 @@ apt:
 			dkms \
 			jq \
 			curl \
+			python3-venv \
+			tree \
+			nodejs \
+			npm \
 			--no-install-recommends
 
 
@@ -64,6 +68,11 @@ etc:
 # 	done
 #   systemctl --user daemon-reload
 #   systemctl daemon-reload
+
+	#Install node tools
+	sudo npm install -g nave
+	sudo pip install virtualenv
+	
 
 test: shellcheck
 

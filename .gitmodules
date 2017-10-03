@@ -1,4 +1,4 @@
 [submodule "bash-powerline"]
 	path = bash-powerline
-	url = git@github.com:riobard/bash-powerline.git
+	url = git@github.com:nokout/bash-powerline.git
 	branch = master
