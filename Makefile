@@ -28,24 +28,48 @@ apt:
 	wget -qO - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 	echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google.list
 
+	# Green recorder repo
+	sudo add-apt-repository ppa:fossproject/ppa
+
+	curl https://repo.skype.com/data/SKYPE-GPG-KEY | sudo apt-key add -
+	echo "deb [arch=amd64] https://repo.skype.com/deb/ stable main" | sudo tee /etc/apt/sources.list.d/skypeforlinux.list
+
+	#Git Kraken - note for personal use only
+	wget https://release.gitkraken.com/linux/gitkraken-amd64.deb
+	sudo dpkg -i gitkraken-amd64.deb
+
 	sudo apt-get install -y \
-			sublime-text \
-			git \
-			xclip \
-			python-pip \
-			terminator \
-			docker.io \
 			dkms \
 			jq \
 			curl \
-			python3-venv \
 			tree \
+			xclip \
+			terminator \
+			git \
+			docker.io \
+			python-pip \
+			python3-venv \
+			sublime-text \
+			meld \
 			nodejs \
 			npm \
 			google-chrome-stable \
 			vlc \
 			gimp \
+			bleachbit \
+			glipper \
+			skypeforlinux \
 			--no-install-recommends
+
+# Consider evernote and dropbox
+
+
+	# Remove the stupid amazon stuff - if its there (errors suppressed)
+	sudo gio trash  \
+		/usr/share/applications/ubuntu-amazon-default.desktop \
+		/usr/share/unity-webapps/userscripts/unity-webapps-amazon/Amazon.user.js \
+		/usr/share/unity-webapps/userscripts/unity-webapps-amazon/manifest.json \
+		&>/dev/null
 
 etc:
 	# Setup the docker user
@@ -73,7 +97,7 @@ etc:
 
 	#Install node tools
 	sudo npm install -g nave
-	sudo pip install virtualenv
+	sudo pip install virtualenv sphinx
 	
 
 test: shellcheck
